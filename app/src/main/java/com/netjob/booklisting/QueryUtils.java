@@ -3,6 +3,10 @@ package com.netjob.booklisting;
 import android.net.Uri;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +14,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.provider.ContactsContract.CommonDataKinds.Website.URL;
 
@@ -19,9 +25,9 @@ import static android.provider.ContactsContract.CommonDataKinds.Website.URL;
 
 public class QueryUtils {
 
-    private final String LOG_TAG = "QueryUtils";
+    private static final String LOG_TAG = "QueryUtils";
 
-    public URL buildUrl(String searchTerm) {
+    public static URL buildUrl(String searchTerm) {
 
         URL url = null;
         final String BASE_URL = "https://www.googleapis.com/books/v1/volumes?q=";
@@ -45,36 +51,22 @@ public class QueryUtils {
         return url;
     }
 
+    public List<Book> makeHttpRequest(URL url) {
 
-    public String makeHttpRequest(URL url) {
-
-        HttpURLConnection httpURLConnection = null;
-        StringBuilder stringBuilder = new StringBuilder();
-        InputStream inputStream = null;
         String jsonString = "";
+        HttpURLConnection httpURLConnection = null;
+        InputStream inputStream = null;
 
         try {
             httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod("GET");
             httpURLConnection.connect();
 
-            inputStream = httpURLConnection.getInputStream();
-
-            if (inputStream == null) {
-                return jsonString;
-            }
-
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-
-            String line;
-
-            while ((line = bufferedReader.readLine()) != null) {
-                stringBuilder.append(line + "\n");
+            if (httpURLConnection.getResponseCode() == 200) {
+                inputStream = httpURLConnection.getInputStream();
+                jsonString = readFromInputStream(inputStream);
 
             }
-
-            jsonString = stringBuilder.toString();
-            Log.i(LOG_TAG, jsonString);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -94,8 +86,67 @@ public class QueryUtils {
             }
         }
 
-        return jsonString;
+        return fetchBookListData(jsonString);
 
+    }
+
+    private List<Book> fetchBookListData(String jsonString) {
+
+        List<Book> mBooksList = new ArrayList<>();
+
+        try {
+            JSONObject jsonObject = new JSONObject(jsonString);
+            JSONArray items = jsonObject.getJSONArray("items");
+
+            for (int i = 0; i < items.length(); i++) {
+
+                JSONObject item = items.getJSONObject(i);
+                JSONObject info = item.getJSONObject("volumeInfo");
+                String title = info.getString("title");
+                JSONArray jsonAuthors = info.getJSONArray("authors");
+                String[] authors = new String[jsonAuthors.length()];
+
+                for (int j = 0; j < authors.length; j++) {
+                    authors[j] = jsonAuthors.getString(j);
+                }
+
+                String publishDate = info.getString("publishedDate");
+                mBooksList.add(new Book(title, authors, publishDate));
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return mBooksList;
+
+    }
+
+    private static String readFromInputStream(InputStream inputStream) {
+
+        String jsonResponse = "";
+        StringBuilder stringBuilder = new StringBuilder();
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+        if (inputStream == null) {
+            return jsonResponse;
+        }
+
+        try {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuilder.append(line + "\n");
+
+            }
+
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "IO Exception", e);
+        }
+
+        jsonResponse = stringBuilder.toString();
+        Log.i(LOG_TAG, jsonResponse);
+
+        return jsonResponse;
     }
 
 
