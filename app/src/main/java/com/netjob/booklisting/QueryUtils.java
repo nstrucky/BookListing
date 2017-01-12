@@ -30,7 +30,7 @@ public class QueryUtils {
     public static URL buildUrl(String searchTerm) {
 
         URL url = null;
-        final String BASE_URL = "https://www.googleapis.com/books/v1/volumes?q=";
+        final String BASE_URL = "https://www.googleapis.com/books/v1/volumes?";
         final String PARAM_Q = "q";
         final String PARAM_KEY = "key";
 
@@ -51,7 +51,7 @@ public class QueryUtils {
         return url;
     }
 
-    public List<Book> makeHttpRequest(URL url) {
+    public static List<Book> makeHttpRequest(URL url) {
 
         String jsonString = "";
         HttpURLConnection httpURLConnection = null;
@@ -90,7 +90,7 @@ public class QueryUtils {
 
     }
 
-    private List<Book> fetchBookListData(String jsonString) {
+    private static List<Book> fetchBookListData(String jsonString) {
 
         List<Book> mBooksList = new ArrayList<>();
 
