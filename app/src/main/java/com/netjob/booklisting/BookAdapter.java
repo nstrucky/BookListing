@@ -17,9 +17,11 @@ import java.util.List;
 
 public class BookAdapter extends ArrayAdapter {
 
+    Context mContext;
 
     public BookAdapter(Context context, List<Book> list) {
         super(context, 0, list);
+        mContext = context;
     }
 
     @NonNull
@@ -46,13 +48,23 @@ public class BookAdapter extends ArrayAdapter {
         }
 
         String[] authors = currentBook.getAuthors();
+
+        viewHolder.mBookTitle.setText(currentBook.getTitle());
+        viewHolder.mAuthors.setText(formatAuthorsString(authors));
+        viewHolder.mPublishDate.setText(currentBook.getPublishDate());
+
+        return listItemView;
+    }
+
+    private String formatAuthorsString(String[] authors) {
+
         StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < authors.length; i++) {
             sb.append(authors[i]);
 
             if (authors.length == 2 && i == 0) {
-                sb.append(" and ");
+                sb.append(" " + mContext.getString(R.string.and) + " ");
 
             } else {
                 if (authors.length > 2 && authors.length - i > 1) {
@@ -60,16 +72,13 @@ public class BookAdapter extends ArrayAdapter {
                 }
 
                 if (authors.length - i == 2) {
-                    sb.append("and ");
+                    sb.append(mContext.getString(R.string.and) + " ");
                 }
             }
         }
 
-        viewHolder.mBookTitle.setText(currentBook.getTitle());
-        viewHolder.mAuthors.setText(sb.toString());
-        viewHolder.mPublishDate.setText(currentBook.getPublishDate());
+        return sb.toString();
 
-        return listItemView;
     }
 
 }

@@ -3,6 +3,6 @@
 
     <string name="search_hint">Enter book name here</string>
 
-
+    <string name="and">and</string>
 
 </resources>
