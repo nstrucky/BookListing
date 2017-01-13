@@ -6,15 +6,14 @@ import android.content.Context;
 import android.content.Loader;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v4.net.ConnectivityManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.net.URL;
@@ -23,30 +22,37 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Book>> {
 
-
-
     private ListView mBooksListView;
     private EditText mSearchEditText;
     private List<Book> mBooks;
     private BookAdapter mBookAdapter;
     private Button mSearchButton;
+    private Button mTryAgainButton;
+    private TextView mEmptyTextView;
+    private ProgressBar mProgressBar;
     private static String mSearchTerms = "";
-    BookLoader bookLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mSearchButton = (Button) findViewById(R.id.button_search);
+        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
+        mEmptyTextView = (TextView) findViewById(R.id.textView_empty_list);
         mSearchEditText = (EditText) findViewById(R.id.editText_searchBox);
-
+        mTryAgainButton = (Button) findViewById(R.id.button_tryAgain);
+        mTryAgainButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loaderAction(2);
+            }
+        });
+        mSearchButton = (Button) findViewById(R.id.button_search);
         mSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mSearchTerms = mSearchEditText.getText().toString();
-                getLoaderManager().restartLoader(0, null, MainActivity.this);
-
+                loaderAction(2);
 
             }
         });
@@ -55,44 +61,59 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mBooksListView = (ListView) findViewById(R.id.listView_booksReturned);
         mBookAdapter = new BookAdapter(this, mBooks);
         mBooksListView.setAdapter(mBookAdapter);
+        mBooksListView.setEmptyView(mEmptyTextView);
 
-        startLoader();
+        loaderAction(1);
 
     }
 
-
-    private void startLoader() {
+    private void loaderAction(int action) {
+        mBookAdapter.clear();
+        mEmptyTextView.setVisibility(View.GONE);
         ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = manager.getActiveNetworkInfo();
 
         if (networkInfo != null && networkInfo.isAvailable() && networkInfo.isConnected()) {
 
-                getLoaderManager().initLoader(0, null, this);
+            mProgressBar.setVisibility(View.VISIBLE);
+            mTryAgainButton.setVisibility(View.GONE);
+            mEmptyTextView.setText(getString(R.string.message_emptytext));
+            switch (action) {
 
+                case 1:
+                    getLoaderManager().initLoader(0, null, this);
+                    break;
+
+                case 2:
+                    getLoaderManager().restartLoader(0, null, this);
+                    break;
+
+            }
 
         } else {
+            mBookAdapter.clear();
+            mEmptyTextView.setVisibility(View.VISIBLE);
+            mTryAgainButton.setVisibility(View.VISIBLE);
+            mEmptyTextView.setText(getString(R.string.message_no_internet));
             Toast.makeText(this, getString(R.string.message_no_internet), Toast.LENGTH_LONG).show();
         }
     }
 
-
     @Override
     public Loader<List<Book>> onCreateLoader(int id, Bundle args) {
-        bookLoader = new BookLoader(this);
-
-        return bookLoader;
+        return new BookLoader(this);
     }
-
 
     @Override
     public void onLoadFinished(Loader<List<Book>> loader, List<Book> books) {
 
-        mBookAdapter.clear();
+        mProgressBar.setVisibility(View.GONE);
+
         if (books != null && !books.isEmpty()) {
             mBookAdapter.addAll(books);
         }
+        mEmptyTextView.setText(getString(R.string.message_no_data));
     }
-
 
     @Override
     public void onLoaderReset(Loader<List<Book>> loader) {
