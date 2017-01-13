@@ -4,5 +4,8 @@
     <string name="search_hint">Enter book name here</string>
 
     <string name="and">and</string>
+    <string name="search">Search</string>
+
+    <string name="message_no_internet">No internet connection...</string>
 
 </resources>
