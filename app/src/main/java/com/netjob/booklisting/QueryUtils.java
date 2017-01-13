@@ -33,13 +33,19 @@ public class QueryUtils {
         final String BASE_URL = "https://www.googleapis.com/books/v1/volumes?";
         final String PARAM_Q = "q";
         final String PARAM_KEY = "key";
+        final String PARAM_ORDER = "orderBy";
+        final String PARAM_MAX_RESULTS = "maxResults";
 
         final String APIKEY = "AIzaSyDm5Jus_bDlY-KTNd3dJ20veQH-_BkSzdg";
         String searchString = searchTerm.replace(" ", "+");
+        final String ordering = "relevance";
+        final String maxResults = "40";
 
         Uri uri = Uri.parse(BASE_URL).buildUpon()
                 .appendQueryParameter(PARAM_KEY, APIKEY)
                 .appendQueryParameter(PARAM_Q, searchString)
+                .appendQueryParameter(PARAM_ORDER, ordering)
+                .appendQueryParameter(PARAM_MAX_RESULTS, maxResults)
                 .build();
 
         try {
