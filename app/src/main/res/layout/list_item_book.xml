@@ -3,28 +3,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:minHeight="100dp"
-    android:padding="5dp">
+    android:minHeight="100dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/gradientshape"
         android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/imageView_bookCover"
             android:layout_width="0dp"
             android:layout_height="150sp"
+            android:layout_marginLeft="16dp"
             android:layout_weight="1"
-            android:scaleType="fitCenter"
-            />
+            android:scaleType="fitCenter" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="8dp"
             android:layout_weight="3"
-            android:orientation="vertical">
+            android:orientation="vertical"
+
+            android:padding="5dp">
 
             <TextView
                 android:id="@+id/textView_bookTitle"

@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mEmptyTextView = (TextView) findViewById(R.id.textView_empty_list);
         mSearchEditText = (EditText) findViewById(R.id.editText_searchBox);
