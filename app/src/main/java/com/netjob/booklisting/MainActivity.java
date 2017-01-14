@@ -9,6 +9,7 @@ import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -51,7 +52,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 mSearchTerms = mSearchEditText.getText().toString();
+                hideSoftKeyboard();
                 loaderAction(2);
 
             }
@@ -64,6 +67,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mBooksListView.setEmptyView(mEmptyTextView);
 
         loaderAction(1);
+
+    }
+
+    private void hideSoftKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
 
     }
 

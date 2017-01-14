@@ -1,5 +1,7 @@
 package com.netjob.booklisting;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by root on 1/11/17.
  */
@@ -10,11 +12,13 @@ public class Book {
     private String mTitle;
     private String[] mAuthors;
     private String mPublishDate;
+    private Bitmap mBitmap;
 
-    public Book(String title, String[] authors, String publishDate) {
+    public Book(String title, String[] authors, String publishDate, Bitmap bitmap) {
         mTitle = title;
         mAuthors = authors;
         mPublishDate = publishDate;
+        mBitmap = bitmap;
     }
 
     public String getTitle() {
@@ -39,6 +43,14 @@ public class Book {
 
     public void setPublishDate(String publishDate) {
         mPublishDate = publishDate;
+    }
+
+    public Bitmap getImageBitmap() {
+        return mBitmap;
+    }
+
+    public void setImageBitmap(Bitmap bitmap) {
+        mBitmap = bitmap;
     }
 
 }

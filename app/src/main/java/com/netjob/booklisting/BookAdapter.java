@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -36,6 +37,7 @@ public class BookAdapter extends ArrayAdapter {
 
             viewHolder = new ViewHolder();
 
+            viewHolder.mImageView = (ImageView) listItemView.findViewById(R.id.imageView_bookCover);
             viewHolder.mBookTitle = (TextView) listItemView.findViewById(R.id.textView_bookTitle);
             viewHolder.mAuthors = (TextView) listItemView.findViewById(R.id.textView_authors);
             viewHolder.mPublishDate = (TextView) listItemView.findViewById(R.id.textView_publshDate);
@@ -48,6 +50,7 @@ public class BookAdapter extends ArrayAdapter {
 
         String[] authors = currentBook.getAuthors();
 
+        viewHolder.mImageView.setImageBitmap(currentBook.getImageBitmap());
         viewHolder.mBookTitle.setText(currentBook.getTitle());
         viewHolder.mAuthors.setText(formatAuthorsString(authors));
         viewHolder.mPublishDate.setText(currentBook.getPublishDate());
@@ -88,5 +91,6 @@ class ViewHolder {
     TextView mBookTitle;
     TextView mAuthors;
     TextView mPublishDate;
+    ImageView mImageView;
 
 }

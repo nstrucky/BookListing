@@ -1,5 +1,7 @@
 package com.netjob.booklisting;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 
@@ -39,7 +41,7 @@ public class QueryUtils {
         final String APIKEY = "AIzaSyDm5Jus_bDlY-KTNd3dJ20veQH-_BkSzdg";
         String searchString = searchTerm.replace(" ", "+");
         final String ordering = "relevance";
-        final String maxResults = "40";
+        final String maxResults = "20";
 
         Uri uri = Uri.parse(BASE_URL).buildUpon()
                 .appendQueryParameter(PARAM_KEY, APIKEY)
@@ -111,13 +113,15 @@ public class QueryUtils {
                 String title = info.getString("title");
                 JSONArray jsonAuthors = info.getJSONArray("authors");
                 String[] authors = new String[jsonAuthors.length()];
+                String imageUrl = info.getJSONObject("imageLinks").getString("thumbnail");
+                Bitmap bitmap = getBitmapFromUrl(imageUrl);
 
                 for (int j = 0; j < authors.length; j++) {
                     authors[j] = jsonAuthors.getString(j);
                 }
 
                 String publishDate = info.getString("publishedDate");
-                mBooksList.add(new Book(title, authors, publishDate));
+                mBooksList.add(new Book(title, authors, publishDate, bitmap));
             }
 
         } catch (JSONException e) {
@@ -155,5 +159,27 @@ public class QueryUtils {
         return jsonResponse;
     }
 
+    public static Bitmap getBitmapFromUrl(String stringUrl) {
+
+        Bitmap bitmap = null;
+        InputStream inputStream = null;
+        try {
+            URL url = new URL(stringUrl);
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setRequestMethod("GET");
+            httpURLConnection.connect();
+
+            if (httpURLConnection.getResponseCode() == 200) {
+                inputStream = httpURLConnection.getInputStream();
+                bitmap = BitmapFactory.decodeStream(inputStream);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return bitmap;
+
+    }
 
 }
