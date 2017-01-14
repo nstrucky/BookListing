@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mEmptyTextView = (TextView) findViewById(R.id.textView_empty_list);
         mSearchEditText = (EditText) findViewById(R.id.editText_searchBox);
@@ -61,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         });
 
+        mEmptyTextView.setVisibility(View.VISIBLE);
         mBooks = new ArrayList<>();
         mBooksListView = (ListView) findViewById(R.id.listView_booksReturned);
         mBookAdapter = new BookAdapter(this, mBooks);
@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mBooksListView.setEmptyView(mEmptyTextView);
 
         loaderAction(1);
+
 
     }
 
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private void loaderAction(int action) {
         mBookAdapter.clear();
-        mEmptyTextView.setVisibility(View.GONE);
+
         ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = manager.getActiveNetworkInfo();
 
@@ -140,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         @Override
         protected void onStartLoading() {
             super.onStartLoading();
+
             forceLoad();
         }
 

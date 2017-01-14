@@ -7,8 +7,8 @@
     <string name="search">Search</string>
 
     <string name="message_no_internet">No internet connection...</string>
-    <string name="message_emptytext">Search for Books!</string>
+    <string name="message_emptytext">Searching for Books!</string>
     <string name="try_again">Try Again</string>
-    <string name="message_no_data">No data returned</string>
+    <string name="message_no_data">No books preset.  Search for a book.</string>
 
 </resources>
