@@ -103,8 +103,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         } else {
             mBookAdapter.clear();
-            mEmptyTextView.setVisibility(View.VISIBLE);
             mTryAgainButton.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.GONE);
             mEmptyTextView.setText(getString(R.string.message_no_internet));
             Toast.makeText(this, getString(R.string.message_no_internet), Toast.LENGTH_LONG).show();
         }
